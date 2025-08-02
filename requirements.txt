@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+# Add any other libraries your app uses, e.g.:
+# requests
+# pydantic
+# langchain-huggingface
+# google-generativeai
