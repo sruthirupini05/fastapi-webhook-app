@@ -1,7 +1,12 @@
 fastapi
 uvicorn
-# Add any other libraries your app uses, e.g.:
-# requests
-# pydantic
-# langchain-huggingface
-# google-generativeai
+requests
+pydantic
+PyPDF2
+python-docx
+google-generativeai
+langchain
+langchain-community
+langchain-huggingface
+sentence-transformers
+faiss-cpu

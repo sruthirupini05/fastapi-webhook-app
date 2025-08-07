@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM-Powered Query-Retrieval</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f0f2f5; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        label { font-weight: bold; margin-top: 10px; display: block; }
+        textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; }
+        button:hover { background-color: #0056b3; }
+        #results { margin-top: 20px; padding: 15px; background-color: #e9ecef; border-radius: 8px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LLM-Powered Intelligent Query-Retrieval System</h1>
+        <p>This is a frontend for your FastAPI application. It sends a POST request to the correct endpoint.</p>
+
+        <form id="query-form">
+            <label for="documents">Document URLs (one per line, PDF or DOCX):</label>
+            <textarea id="documents" rows="4" placeholder="https://example.com/doc1.pdf&#10;https://example.com/doc2.docx"></textarea>
+            
+            <label for="questions">Questions (one per line):</label>
+            <textarea id="questions" rows="4" placeholder="What is the main topic?&#10;How is the data protected?"></textarea>
+
+            <button type="submit">Get Answers</button>
+        </form>
+
+        <div id="results">
+            <p><strong>Response:</strong></p>
+            <p id="answer-text">Submit a query to get started...</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('query-form');
+        const documentsInput = document.getElementById('documents');
+        const questionsInput = document.getElementById('questions');
+        const answerText = document.getElementById('answer-text');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent the form from submitting normally
+
+            const documents = documentsInput.value.split('\n').map(s => s.trim()).filter(s => s);
+            const questions = questionsInput.value.split('\n').map(s => s.trim()).filter(s => s);
+
+            if (documents.length === 0 || questions.length === 0) {
+                alert("Please provide at least one document URL and one question.");
+                return;
+            }
+
+            answerText.textContent = "Loading...";
+
+            try {
+                // THIS IS THE CORRECT API CALL
+                const response = await fetch('/hackrx/run', {
+                    method: 'POST', // Correct method
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        documents: documents,
+                        questions: questions,
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    answerText.textContent = "Answers:\n" + data.answers.join('\n\n');
+                } else {
+                    answerText.textContent = `Error: ${data.detail || 'Something went wrong.'}`;
+                }
+
+            } catch (error) {
+                console.error('Fetch error:', error);
+                answerText.textContent = 'Failed to connect to the server.';
+            }
+        });
+    </script>
+</body>
+</html>
